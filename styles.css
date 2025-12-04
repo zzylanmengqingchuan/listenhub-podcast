@@ -151,3 +151,230 @@
 		gap: 4px;
 	}
 }
+
+/* ============================================
+   音频卡片样式 - 美化版
+   ============================================ */
+
+.listenhub-audio-card {
+	margin: 20px 0;
+	border-radius: 12px;
+	overflow: hidden;
+	background: linear-gradient(135deg, var(--background-secondary) 0%, var(--background-primary) 100%);
+	border: 1px solid var(--background-modifier-border);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	transition: all 0.3s ease;
+}
+
+.listenhub-audio-card:hover {
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+	transform: translateY(-2px);
+}
+
+/* 卡片头部 */
+.listenhub-audio-header {
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	padding: 16px 20px;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.listenhub-logo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	color: #ffffff;
+}
+
+.listenhub-logo svg {
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.listenhub-brand {
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: 0.5px;
+	text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* 卡片内容区 */
+.listenhub-audio-content {
+	padding: 20px;
+}
+
+/* 音频标题 */
+.listenhub-audio-title {
+	margin: 0 0 16px 0;
+	font-size: 18px;
+	font-weight: 600;
+	line-height: 1.4;
+	color: var(--text-normal);
+}
+
+/* 元信息 */
+.listenhub-audio-meta {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	margin-bottom: 16px;
+	padding-bottom: 16px;
+	border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.meta-item {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	font-size: 13px;
+	color: var(--text-muted);
+	padding: 6px 10px;
+	background-color: var(--background-secondary);
+	border-radius: 6px;
+	transition: all 0.2s ease;
+}
+
+.meta-item:hover {
+	background-color: var(--background-modifier-hover);
+	color: var(--text-normal);
+}
+
+.meta-item svg {
+	flex-shrink: 0;
+	opacity: 0.7;
+}
+
+.meta-mode {
+	background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+	color: #667eea;
+	font-weight: 500;
+}
+
+.meta-credits {
+	background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+	color: #ff9500;
+	font-weight: 500;
+}
+
+/* 音频播放器 */
+.listenhub-audio-player {
+	margin: 20px 0;
+	padding: 16px;
+	background: var(--background-secondary);
+	border-radius: 8px;
+	border: 1px solid var(--background-modifier-border);
+}
+
+.listenhub-audio-player audio {
+	width: 100%;
+	height: 40px;
+	outline: none;
+}
+
+.listenhub-audio-player audio::-webkit-media-controls-panel {
+	background-color: var(--background-primary);
+}
+
+/* 卡片底部 */
+.listenhub-audio-footer {
+	display: flex;
+	justify-content: flex-end;
+	padding-top: 16px;
+	border-top: 1px solid var(--background-modifier-border);
+}
+
+.listenhub-open-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 10px 16px;
+	background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+	color: #ffffff;
+	text-decoration: none;
+	border-radius: 8px;
+	font-size: 14px;
+	font-weight: 500;
+	transition: all 0.3s ease;
+	box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.listenhub-open-link:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+	text-decoration: none;
+}
+
+.listenhub-open-link svg {
+	flex-shrink: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+	.listenhub-audio-card {
+		margin: 16px 0;
+		border-radius: 10px;
+	}
+
+	.listenhub-audio-header {
+		padding: 14px 16px;
+	}
+
+	.listenhub-audio-content {
+		padding: 16px;
+	}
+
+	.listenhub-audio-title {
+		font-size: 16px;
+	}
+
+	.listenhub-audio-meta {
+		gap: 8px;
+		margin-bottom: 14px;
+		padding-bottom: 14px;
+	}
+
+	.meta-item {
+		font-size: 12px;
+		padding: 5px 8px;
+	}
+
+	.listenhub-audio-player {
+		margin: 16px 0;
+		padding: 12px;
+	}
+
+	.listenhub-audio-footer {
+		justify-content: center;
+	}
+
+	.listenhub-open-link {
+		width: 100%;
+		justify-content: center;
+	}
+}
+
+/* 深色模式优化 */
+.theme-dark .listenhub-audio-card {
+	background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.theme-dark .listenhub-audio-card:hover {
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.theme-dark .listenhub-audio-player {
+	background: rgba(255, 255, 255, 0.05);
+	border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 浅色模式优化 */
+.theme-light .listenhub-audio-card {
+	background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+}
+
+.theme-light .meta-item {
+	background-color: #f5f5f5;
+}
+
+.theme-light .listenhub-audio-player {
+	background: #f8f9fa;
+}
