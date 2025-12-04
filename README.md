@@ -2,6 +2,9 @@
 
 一个 Obsidian 插件，让你可以直接从 Markdown 笔记生成播客音频。通过集成 [ListenHub](https://listenhub.ai) API，将文字内容转换为高质量的音频播客。
 
+<img width="889" height="472" alt="image" src="https://github.com/user-attachments/assets/3d4cdfcd-37bf-4169-af65-f1795171c895" />
+
+
 ## ✨ 功能特点
 
 - 🎙️ **一键生成播客** - 右键点击任何笔记即可生成播客
