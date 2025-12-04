@@ -8,7 +8,6 @@ export interface ListenHubSettings {
 	defaultMode: PodcastMode;
 	defaultSpeakerId: string;
 	secondSpeakerId: string;
-	autoDownload: boolean;
 	showNotifications: boolean;
 }
 
@@ -18,7 +17,6 @@ export const DEFAULT_SETTINGS: ListenHubSettings = {
 	defaultMode: 'quick',
 	defaultSpeakerId: 'CN-Man-Beijing-V2',
 	secondSpeakerId: 'chat-girl-105-cn',
-	autoDownload: false,
 	showNotifications: true
 };
 
@@ -132,17 +130,6 @@ export class ListenHubSettingTab extends PluginSettingTab {
 				}));
 
 		containerEl.createEl('h3', { text: '其他选项' });
-
-		// 自动下载
-		new Setting(containerEl)
-			.setName('自动下载音频')
-			.setDesc('生成完成后自动下载音频文件到 vault')
-			.addToggle(toggle => toggle
-				.setValue(this.plugin.settings.autoDownload)
-				.onChange(async (value) => {
-					this.plugin.settings.autoDownload = value;
-					await this.plugin.saveSettings();
-				}));
 
 		// 通知设置
 		new Setting(containerEl)

@@ -16,28 +16,18 @@ import {
 	ListenHubSettingTab
 } from './src/settings';
 import { PodcastGenerationModal } from './src/ui/podcast-modal';
-import { TaskManagerView, TASK_VIEW_TYPE } from './src/ui/task-manager';
-import { GenerationTask, PodcastMode, Language } from './src/types';
+import { PodcastMode, Language } from './src/types';
 
 export default class ListenHubPlugin extends Plugin {
 	settings!: ListenHubSettings;
 	apiClient!: ListenHubApiClient;
-	taskView: TaskManagerView | null = null;
+	currentFile: TFile | null = null;
 
 	async onload() {
 		await this.loadSettings();
 
 		// 初始化 API 客户端
 		this.apiClient = new ListenHubApiClient(this.settings.apiKey);
-
-		// 注册任务管理视图
-		this.registerView(
-			TASK_VIEW_TYPE,
-			(leaf) => {
-				this.taskView = new TaskManagerView(leaf, this);
-				return this.taskView;
-			}
-		);
 
 		// 添加功能区图标
 		this.addRibbonIcon('mic', '生成播客', async (evt: MouseEvent) => {
@@ -64,15 +54,6 @@ export default class ListenHubPlugin extends Plugin {
 			name: '生成双人播客',
 			editorCallback: async (editor: Editor) => {
 				await this.generatePodcastFromCurrentFile(true);
-			}
-		});
-
-		// 添加命令：打开任务管理器
-		this.addCommand({
-			id: 'open-task-manager',
-			name: '打开任务管理器',
-			callback: () => {
-				this.activateTaskView();
 			}
 		});
 
@@ -175,6 +156,9 @@ export default class ListenHubPlugin extends Plugin {
 				return;
 			}
 
+			// 保存当前文件引用
+			this.currentFile = file;
+
 			// 打开配置对话框
 			const modal = new PodcastGenerationModal(
 				this.app,
@@ -182,7 +166,7 @@ export default class ListenHubPlugin extends Plugin {
 				content,
 				file.basename,
 				async (config) => {
-					await this.startGeneration(file.basename, config);
+					await this.startGeneration(file, config);
 				}
 			);
 
@@ -202,7 +186,7 @@ export default class ListenHubPlugin extends Plugin {
 	 * 开始生成播客
 	 */
 	async startGeneration(
-		fileName: string,
+		file: TFile,
 		config: {
 			mode: PodcastMode;
 			language: Language;
@@ -234,29 +218,12 @@ export default class ListenHubPlugin extends Plugin {
 
 			const episodeId = response.data.episodeId;
 
-			// 创建任务
-			const task: GenerationTask = {
-				episodeId,
-				fileName,
-				mode,
-				language,
-				status: 'pending',
-				createdAt: Date.now()
-			};
-
-			// 添加到任务视图
-			if (!this.taskView) {
-				await this.activateTaskView();
-			}
-
-			this.taskView?.addTask(task);
-
 			if (this.settings.showNotifications) {
-				new Notice(`播客任务已创建: ${episodeId}`);
+				new Notice(`播客任务已创建，正在生成中...`);
 			}
 
 			// 开始轮询
-			this.pollEpisodeResult(episodeId);
+			await this.pollEpisodeResult(episodeId, file, mode);
 
 		} catch (error: any) {
 			new Notice(`创建失败: ${error.message}`);
@@ -267,105 +234,74 @@ export default class ListenHubPlugin extends Plugin {
 	/**
 	 * 轮询查询生成结果
 	 */
-	async pollEpisodeResult(episodeId: string) {
+	async pollEpisodeResult(episodeId: string, file: TFile, mode: PodcastMode) {
 		try {
 			const result = await this.apiClient.pollEpisodeResult(
 				episodeId,
 				(status, detail) => {
-					// 更新任务状态
-					this.taskView?.updateTask(episodeId, {
-						status: status as any,
-						title: detail?.title,
-						audioUrl: detail?.audioUrl
-					});
+					// 显示进度通知
+					if (this.settings.showNotifications && status === 'processing') {
+						// 静默处理，避免过多通知
+					}
 				}
 			);
 
 			// 生成成功
 			const detail = result.data;
 
-			this.taskView?.updateTask(episodeId, {
-				status: 'success',
-				title: detail.title,
-				audioUrl: detail.audioUrl
-			});
-
 			if (this.settings.showNotifications) {
 				new Notice(`✅ 播客生成成功!\n标题: ${detail.title}\n积分: ${detail.credits}`);
 			}
 
-			// 自动下载
-			if (this.settings.autoDownload && detail.audioUrl) {
-				await this.downloadAudio(detail.audioUrl, detail.title);
-			}
+			// 插入音频到笔记
+			await this.insertAudioToNote(file, detail, mode);
 
 		} catch (error: any) {
-			// 生成失败
-			this.taskView?.updateTask(episodeId, {
-				status: 'failed',
-				error: error.message
-			});
-
 			new Notice(`❌ 播客生成失败: ${error.message}`);
 			console.error('Podcast generation failed:', error);
 		}
 	}
 
 	/**
-	 * 下载音频文件
+	 * 插入音频播放器到笔记
 	 */
-	async downloadAudio(audioUrl: string, title: string) {
+	async insertAudioToNote(file: TFile, detail: any, mode: PodcastMode) {
 		try {
-			const response = await fetch(audioUrl);
-			const blob = await response.blob();
-			const arrayBuffer = await blob.arrayBuffer();
-			const buffer = Buffer.from(arrayBuffer);
+			const currentContent = await this.app.vault.read(file);
 
-			// 确保 podcasts 目录存在
-			const podcastsDir = 'podcasts';
-			if (!await this.app.vault.adapter.exists(podcastsDir)) {
-				await this.app.vault.createFolder(podcastsDir);
-			}
+			// 生成 ListenHub 链接
+			const listenhubUrl = `https://listenhub.ai/zh/episode/${detail.episodeId}`;
 
-			const fileName = `${title.replace(/[\\/:*?"<>|]/g, '_')}.mp3`;
-			const filePath = `${podcastsDir}/${fileName}`;
+			// 格式化音频时长（秒转分钟）
+			const durationMin = detail.audioDuration ? Math.round(detail.audioDuration / 60000) : 0;
 
-			await this.app.vault.createBinary(filePath, buffer);
+			// 构建插入内容
+			const audioSection = `
+
+---
+
+## 🎙️ 播客音频
+
+**标题**: ${detail.title}
+**时长**: ${durationMin} 分钟 | **积分**: ${detail.credits} | **模式**: ${mode}
+
+<audio controls src="${detail.audioUrl}" style="width: 100%"></audio>
+
+[📱 在 ListenHub 中打开](${listenhubUrl})
+
+---
+`;
+
+			// 追加到笔记末尾
+			const newContent = currentContent + audioSection;
+			await this.app.vault.modify(file, newContent);
 
 			if (this.settings.showNotifications) {
-				new Notice(`音频已下载到: ${filePath}`);
+				new Notice('✅ 音频播放器已插入到笔记');
 			}
 		} catch (error: any) {
-			new Notice(`下载失败: ${error.message}`);
-			console.error('Failed to download audio:', error);
-		}
-	}
-
-	/**
-	 * 激活任务管理视图
-	 */
-	async activateTaskView() {
-		const { workspace } = this.app;
-
-		let leaf: WorkspaceLeaf | null = null;
-		const leaves = workspace.getLeavesOfType(TASK_VIEW_TYPE);
-
-		if (leaves.length > 0) {
-			// 视图已存在，激活它
-			leaf = leaves[0];
-		} else {
-			// 创建新视图
-			leaf = workspace.getRightLeaf(false);
-			if (leaf) {
-				await leaf.setViewState({
-					type: TASK_VIEW_TYPE,
-					active: true
-				});
-			}
-		}
-
-		if (leaf) {
-			workspace.revealLeaf(leaf);
+			new Notice(`插入音频失败: ${error.message}`);
+			console.error('Failed to insert audio:', error);
 		}
 	}
 
