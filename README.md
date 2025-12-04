@@ -8,8 +8,6 @@
 - 👥 **多种模式** - 支持单人、双人对话和辩论模式
 - ⚡ **灵活配置** - Quick/Deep/Debate 三种生成模式
 - 🎵 **多种音色** - 支持中英文多种音色选择
-- 📊 **任务管理** - 实时查看生成进度和历史记录
-- 💾 **自动下载** - 可选自动下载生成的音频文件
 - 🌍 **多语言** - 支持中文和英文
 
 ## 📋 前置要求
@@ -29,7 +27,7 @@
 
 1. 打开 Obsidian 设置
 2. 进入「第三方插件」→「浏览」
-3. 搜索「ListenHub」
+3. 搜索「ListenHub-podcast」
 4. 点击「安装」
 
 ### 方式 2: 手动安装
@@ -105,20 +103,6 @@ npm run build
 > 💡 **说明**：
 > - **播客时长**：最终生成的音频文件的长度
 > - **生成时间**：API 处理并生成播客所需的时间
-
-## 📊 任务管理器
-
-任务管理器会显示所有播客生成任务的状态：
-
-- ⏳ **Pending** - 等待处理
-- 🔄 **Processing** - 生成中
-- ✅ **Success** - 生成成功
-- ❌ **Failed** - 生成失败
-
-对于成功的任务，你可以：
-- 📋 复制音频链接
-- ▶️ 在浏览器中播放
-- 💾 下载到 vault
 
 ## 🎨 可用音色
 
@@ -205,12 +189,21 @@ A:
 - 需要深度内容 → **Deep**
 - 需要多角度讨论 → **Debate**（需要两个音色）
 
-### Q: 音频保存在哪里？
+### Q: speakerID如何获取？
 
 A:
-- 开启「自动下载」后保存在 `podcasts/` 目录
-- 也可以通过任务管理器手动下载
-- 或直接复制链接在线播放
+"name": "晓曼",  
+                "speakerId": "chat-girl-105-cn", 
+"name": "原野",  
+                "speakerId": "CN-Man-Beijing-V2", 
+"name": "高晴",  
+                "speakerId": "gaoqing3-bfb5c88a",  
+"name": "苏哲",  
+                "speakerId": "suzhe-45bbbe54",
+更多以及自己克隆的，可以使用：
+curl -X GET "https://api.marswave.ai/openapi/v1/speakers/list?language=zh" \  -H "Authorization: Bearer YOUR_API_KEY"
+
+返回的结果里面可以看到全部的音色的ID
 
 ## 🔗 相关链接
 
