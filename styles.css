@@ -1,0 +1,153 @@
+/* ListenHub 插件样式 */
+
+/* 任务管理器视图 */
+.listenhub-task-list {
+	padding: 10px;
+}
+
+.listenhub-empty-state {
+	text-align: center;
+	color: var(--text-muted);
+	padding: 20px;
+	font-style: italic;
+}
+
+.listenhub-task-item {
+	display: flex;
+	align-items: flex-start;
+	padding: 12px;
+	margin-bottom: 10px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 6px;
+	background-color: var(--background-secondary);
+	gap: 12px;
+}
+
+.listenhub-task-item:hover {
+	background-color: var(--background-modifier-hover);
+}
+
+.listenhub-task-status {
+	font-size: 24px;
+	line-height: 1;
+	flex-shrink: 0;
+}
+
+.listenhub-task-status.status-pending {
+	animation: pulse 2s ease-in-out infinite;
+}
+
+.listenhub-task-status.status-processing {
+	animation: spin 2s linear infinite;
+}
+
+@keyframes pulse {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+@keyframes spin {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+
+.listenhub-task-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.listenhub-task-title {
+	font-weight: 600;
+	margin-bottom: 6px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.listenhub-task-meta {
+	display: flex;
+	gap: 12px;
+	font-size: 12px;
+	color: var(--text-muted);
+	flex-wrap: wrap;
+}
+
+.listenhub-task-meta span {
+	display: inline-block;
+}
+
+.listenhub-task-error {
+	margin-top: 6px;
+	padding: 6px 10px;
+	background-color: var(--background-modifier-error);
+	color: var(--text-error);
+	border-radius: 4px;
+	font-size: 12px;
+}
+
+.listenhub-task-actions {
+	display: flex;
+	gap: 6px;
+	flex-shrink: 0;
+	flex-wrap: wrap;
+}
+
+.listenhub-task-actions button {
+	padding: 4px 10px;
+	font-size: 12px;
+	border-radius: 4px;
+	border: 1px solid var(--background-modifier-border);
+	background-color: var(--interactive-normal);
+	color: var(--text-normal);
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.listenhub-task-actions button:hover {
+	background-color: var(--interactive-hover);
+	border-color: var(--interactive-accent);
+}
+
+.listenhub-task-actions button:active {
+	background-color: var(--interactive-active);
+}
+
+/* 设置页面样式增强 */
+.setting-item-description a {
+	color: var(--text-accent);
+	text-decoration: underline;
+}
+
+/* 模态框样式 */
+.modal .setting-item {
+	border: none;
+}
+
+.modal h2 {
+	margin-bottom: 20px;
+}
+
+/* 响应式布局 */
+@media (max-width: 768px) {
+	.listenhub-task-item {
+		flex-direction: column;
+	}
+
+	.listenhub-task-actions {
+		width: 100%;
+		justify-content: flex-start;
+	}
+
+	.listenhub-task-meta {
+		flex-direction: column;
+		gap: 4px;
+	}
+}

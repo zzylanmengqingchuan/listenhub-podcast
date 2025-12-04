@@ -1,0 +1,20 @@
+# Logs
+*.log
+npm-debug.log*
+
+# Dependencies
+node_modules/
+
+# Build
+main.js
+*.js.map
+
+# macOS
+.DS_Store
+
+# IDEs
+.vscode/
+.idea/
+
+# Obsidian
+data.json
