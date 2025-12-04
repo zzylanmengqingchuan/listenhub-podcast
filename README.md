@@ -192,6 +192,7 @@ A:
 ### Q: speakerID如何获取？
 
 A:
+```
 "name": "晓曼",  
                 "speakerId": "chat-girl-105-cn", 
 "name": "原野",  
@@ -200,8 +201,13 @@ A:
                 "speakerId": "gaoqing3-bfb5c88a",  
 "name": "苏哲",  
                 "speakerId": "suzhe-45bbbe54",
+```
+
 更多以及自己克隆的，可以使用：
+
+```
 curl -X GET "https://api.marswave.ai/openapi/v1/speakers/list?language=zh" \  -H "Authorization: Bearer YOUR_API_KEY"
+```
 
 返回的结果里面可以看到全部的音色的ID
 
