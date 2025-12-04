@@ -175,7 +175,7 @@ export class TaskManagerView extends ItemView {
 			});
 
 			new Notice('状态已更新');
-		} catch (error) {
+		} catch (error: any) {
 			new Notice(`刷新失败: ${error.message}`);
 		}
 	}
@@ -197,7 +197,7 @@ export class TaskManagerView extends ItemView {
 
 			await this.app.vault.createBinary(filePath, buffer);
 			new Notice(`音频已下载到: ${filePath}`);
-		} catch (error) {
+		} catch (error: any) {
 			new Notice(`下载失败: ${error.message}`);
 		}
 	}

@@ -154,7 +154,7 @@ export class PodcastGenerationModal extends Modal {
 				}));
 	}
 
-	updateSpeakerSettings: () => void;
+	updateSpeakerSettings!: () => void;
 
 	submit() {
 		// 验证

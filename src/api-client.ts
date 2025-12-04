@@ -55,7 +55,7 @@ export class ListenHubApiClient {
 			}
 
 			return data as T;
-		} catch (error) {
+		} catch (error: any) {
 			console.error('ListenHub API request failed:', error);
 			throw error;
 		}
@@ -180,7 +180,7 @@ export class ListenHubApiClient {
 		try {
 			await this.getSpeakers('zh');
 			return true;
-		} catch (error) {
+		} catch (error: any) {
 			console.error('API Key validation failed:', error);
 			return false;
 		}

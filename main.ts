@@ -20,8 +20,8 @@ import { TaskManagerView, TASK_VIEW_TYPE } from './src/ui/task-manager';
 import { GenerationTask, PodcastMode, Language } from './src/types';
 
 export default class ListenHubPlugin extends Plugin {
-	settings: ListenHubSettings;
-	apiClient: ListenHubApiClient;
+	settings!: ListenHubSettings;
+	apiClient!: ListenHubApiClient;
 	taskView: TaskManagerView | null = null;
 
 	async onload() {
@@ -53,7 +53,7 @@ export default class ListenHubPlugin extends Plugin {
 		this.addCommand({
 			id: 'generate-solo-podcast',
 			name: '生成单人播客',
-			editorCallback: async (editor: Editor, view: MarkdownView) => {
+			editorCallback: async (editor: Editor) => {
 				await this.generatePodcastFromCurrentFile();
 			}
 		});
@@ -62,7 +62,7 @@ export default class ListenHubPlugin extends Plugin {
 		this.addCommand({
 			id: 'generate-dual-podcast',
 			name: '生成双人播客',
-			editorCallback: async (editor: Editor, view: MarkdownView) => {
+			editorCallback: async (editor: Editor) => {
 				await this.generatePodcastFromCurrentFile(true);
 			}
 		});
@@ -192,7 +192,7 @@ export default class ListenHubPlugin extends Plugin {
 			}
 
 			modal.open();
-		} catch (error) {
+		} catch (error: any) {
 			new Notice(`读取文件失败: ${error.message}`);
 			console.error(error);
 		}
@@ -258,7 +258,7 @@ export default class ListenHubPlugin extends Plugin {
 			// 开始轮询
 			this.pollEpisodeResult(episodeId);
 
-		} catch (error) {
+		} catch (error: any) {
 			new Notice(`创建失败: ${error.message}`);
 			console.error('Failed to create podcast:', error);
 		}
@@ -299,7 +299,7 @@ export default class ListenHubPlugin extends Plugin {
 				await this.downloadAudio(detail.audioUrl, detail.title);
 			}
 
-		} catch (error) {
+		} catch (error: any) {
 			// 生成失败
 			this.taskView?.updateTask(episodeId, {
 				status: 'failed',
@@ -335,7 +335,7 @@ export default class ListenHubPlugin extends Plugin {
 			if (this.settings.showNotifications) {
 				new Notice(`音频已下载到: ${filePath}`);
 			}
-		} catch (error) {
+		} catch (error: any) {
 			new Notice(`下载失败: ${error.message}`);
 			console.error('Failed to download audio:', error);
 		}
@@ -391,7 +391,7 @@ export default class ListenHubPlugin extends Plugin {
 			].join('\n');
 
 			new Notice(message, 10000);
-		} catch (error) {
+		} catch (error: any) {
 			new Notice(`查询失败: ${error.message}`);
 			console.error('Failed to check credits:', error);
 		}

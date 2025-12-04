@@ -182,7 +182,7 @@ export class ListenHubSettingTab extends PluginSettingTab {
 						].join('\n');
 
 						new Notice(message, 8000);
-					} catch (error) {
+					} catch (error: any) {
 						new Notice(`查询失败: ${error.message}`);
 					}
 				}));
