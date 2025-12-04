@@ -1,6 +1,6 @@
 {
-	"id": "obsidian-listenhub-plugin",
-	"name": "ListenHub Podcast Generator",
+	"id": "listenhub-podcast",
+	"name": "listenhub podcast",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
 	"description": "Generate podcasts from your Obsidian notes using ListenHub API",
